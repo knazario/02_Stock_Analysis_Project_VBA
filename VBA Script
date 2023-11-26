@@ -1,0 +1,41 @@
+Sub stocks():
+Dim i As Long
+Dim ticker As String
+Dim opening As Double
+Dim closing As Double
+Dim volume As Variant
+Dim counter As Long
+
+'Code borrowed from a demo Adrien(Instructor) provided in class
+Dim lastRow As Long
+lastRow = Cells(Rows.Count, 1).End(xlUp).Row
+
+Cells(1, 9).Value = "Ticker"
+Cells(1, 10).Value = "Yearly Change"
+Cells(1, 11).Value = "Percent Change"
+Cells(1, 12).Value = "Total Stock Volume"
+
+counter = 1
+
+For i = 2 To lastRow
+
+    If ticker = Cells(i, 1).Value Then
+           closing = Cells(i, 6)
+           volume = Cells(i, 7).Value + volume
+           Cells(counter, 12).Value = volume
+           Cells(counter, 10).Value = closing - opening
+           Cells(counter, 11).Value = (closing - opening) / opening
+           
+    Else
+        counter = counter + 1
+        ticker = Cells(i, 1).Value
+        opening = Cells(i, 3).Value
+        Cells(counter, 9).Value = ticker
+        volume = Cells(i, 7).Value
+        Cells(counter, 12).Value = volume
+
+    End If
+
+Next i
+
+End Sub
