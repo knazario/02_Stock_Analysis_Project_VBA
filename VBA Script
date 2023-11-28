@@ -1,4 +1,7 @@
 Sub stocks():
+
+'Declaring all necessary variables to pull in data, cylce through loops and hold various pieces
+' data during looping
 Dim i As Long
 Dim j As Integer
 Dim ticker As String
@@ -14,8 +17,11 @@ Dim gincrease As Double
 Dim gdecrase As Double
 
 
-'Code borrowed from microsoft support site
+'Code borrowed from microsoft support site. This sets wscounter to the number of sheets in the workbook
 wscounter = ActiveWorkbook.Worksheets.Count
+
+' j loop will cycle through each sheet in the workbook and build the table to enter the info
+' from the nested loop
 
 'For j = 1 To wscounter
     
@@ -24,15 +30,18 @@ wscounter = ActiveWorkbook.Worksheets.Count
     'Code borrowed from a demo Adrien(Instructor) provided in class
     lastRow = Cells(Rows.Count, 1).End(xlUp).Row
     
+    'Create Ticker summary table on row 1 starting at column "I" (9)
     Cells(1, 9).Value = "Ticker"
     Cells(1, 10).Value = "Yearly Change"
     Cells(1, 11).Value = "Percent Change"
     Cells(1, 12).Value = "Total Stock Volume"
     
+    'set counter to 1 to offset the data being entered in the table to start on the 2nd row. Loop will then increase by one
+    ' whenever it encounters a new tikcer symbol 
     counter = 1
     
     For i = 2 To lastRow
-
+' conditional to check if the ticker matches the previous ticker row
         If ticker = Cells(i, 1).Value Then
                closing = Cells(i, 6)
                volume = Cells(i, 7).Value + volume
@@ -68,19 +77,20 @@ wscounter = ActiveWorkbook.Worksheets.Count
             Cells(counter, 12).Value = volume
         End If
     Next i
+
+    Range("O1").Value = "Ticker"
+    Range("P1").Value = "Value"
+    Range("N2").Value = "Greatest % Increase"
+    Range("N3").Value = "Greatest % Decrease "
+    Range("N4").Value = "Greatest Total Volume"
+
+    Range("O2").Value = gincrease_tick
+    Range("O3").Value = gdecrease_tick
+    Range("O4").Value = gvolume_tick
+
+    Range("P2").Value = gincrease
+    Range("P3").Value = gdecrease
+    Range("P4").Value = gvolume
 'Next j
 
-Range("O1").Value = "Ticker"
-Range("P1").Value = "Value"
-Range("N2").Value = "Greatest % Increase"
-Range("N3").Value = "Greatest % Decrease "
-Range("N4").Value = "Greatest Total Volume"
-
-Range("O2").Value = gincrease_tick
-Range("O3").Value = gdecrease_tick
-Range("O4").Value = gvolume_tick
-
-Range("P2").Value = gincrease
-Range("P3").Value = gdecrease
-Range("P4").Value = gvolume
 End Sub
