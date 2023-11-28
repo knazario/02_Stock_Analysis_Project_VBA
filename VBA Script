@@ -1,41 +1,86 @@
 Sub stocks():
 Dim i As Long
+Dim j As Integer
 Dim ticker As String
 Dim opening As Double
 Dim closing As Double
 Dim volume As Variant
 Dim counter As Long
-
-'Code borrowed from a demo Adrien(Instructor) provided in class
+Dim wscounter As Integer
 Dim lastRow As Long
-lastRow = Cells(Rows.Count, 1).End(xlUp).Row
+Dim gincrease_tick As String, gdecrease_tick As String, gvolume_tick As String
+Dim gvolume As Variant
+Dim gincrease As Double
+Dim gdecrase As Double
 
-Cells(1, 9).Value = "Ticker"
-Cells(1, 10).Value = "Yearly Change"
-Cells(1, 11).Value = "Percent Change"
-Cells(1, 12).Value = "Total Stock Volume"
 
-counter = 1
+'Code borrowed from microsoft support site
+wscounter = ActiveWorkbook.Worksheets.Count
 
-For i = 2 To lastRow
+'For j = 1 To wscounter
+    
+    'Worksheets(j).Activate
+    
+    'Code borrowed from a demo Adrien(Instructor) provided in class
+    lastRow = Cells(Rows.Count, 1).End(xlUp).Row
+    
+    Cells(1, 9).Value = "Ticker"
+    Cells(1, 10).Value = "Yearly Change"
+    Cells(1, 11).Value = "Percent Change"
+    Cells(1, 12).Value = "Total Stock Volume"
+    
+    counter = 1
+    
+    For i = 2 To lastRow
 
-    If ticker = Cells(i, 1).Value Then
-           closing = Cells(i, 6)
-           volume = Cells(i, 7).Value + volume
-           Cells(counter, 12).Value = volume
-           Cells(counter, 10).Value = closing - opening
-           Cells(counter, 11).Value = (closing - opening) / opening
-           
-    Else
-        counter = counter + 1
-        ticker = Cells(i, 1).Value
-        opening = Cells(i, 3).Value
-        Cells(counter, 9).Value = ticker
-        volume = Cells(i, 7).Value
-        Cells(counter, 12).Value = volume
+        If ticker = Cells(i, 1).Value Then
+               closing = Cells(i, 6)
+               volume = Cells(i, 7).Value + volume
+               Cells(counter, 12).Value = volume
+               Cells(counter, 10).Value = closing - opening
+               Cells(counter, 11).Value = (closing - opening) / opening
 
-    End If
+        Else
+            counter = counter + 1
+            
+            If opening = 0 Then
+            
+            ElseIf gincrease < (closing - opening) / opening Then
+                gincrease = (closing - opening) / opening
+                gincrease_tick = ticker
+            
+            
+            ElseIf gdecrease > (closing - opening) / opening Then
+                gdecrease = (closing - opening) / opening
+                gdecrease_tick = ticker
+            
+            End If
+            
+            If gvolume < volume Then
+                gvolume = volume
+                gvolume_tick = ticker
+            End If
+            
+            ticker = Cells(i, 1).Value
+            opening = Cells(i, 3).Value
+            Cells(counter, 9).Value = ticker
+            volume = Cells(i, 7).Value
+            Cells(counter, 12).Value = volume
+        End If
+    Next i
+'Next j
 
-Next i
+Range("O1").Value = "Ticker"
+Range("P1").Value = "Value"
+Range("N2").Value = "Greatest % Increase"
+Range("N3").Value = "Greatest % Decrease "
+Range("N4").Value = "Greatest Total Volume"
 
+Range("O2").Value = gincrease_tick
+Range("O3").Value = gdecrease_tick
+Range("O4").Value = gvolume_tick
+
+Range("P2").Value = gincrease
+Range("P3").Value = gdecrease
+Range("P4").Value = gvolume
 End Sub
