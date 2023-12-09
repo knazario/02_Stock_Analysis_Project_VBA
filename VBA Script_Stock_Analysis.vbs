@@ -57,14 +57,24 @@ For j = 1 To wscounter
             volume = Cells(i, 7).Value
             Cells(sum_table_row, 9).Value = ticker
 
-        'Checks if current row does not equal (<>) the row below. This will find the last row of each ticker symbol          
+        'Checks if current row does not equal (<>) the row below. This will find the last row of each ticker symbol
         ElseIf Cells(i, 1).Value <> Cells(i + 1, 1).Value Then
             'Store closing and update volume from current row (last row of ticker), and add values to summary table
             closing = Cells(i, 6)
             volume = volume + Cells(i, 7).Value
             Cells(sum_table_row, 12).Value = volume
-            Cells(sum_table_row, 10).Value = closing - opening
-            Cells(sum_table_row, 11).Value = (closing - opening) / opening
+            Cells(sum_table_row, 10).Value = Round((closing - opening), 2)
+            Cells(sum_table_row, 11).Value = Round(((closing - opening) / opening), 4)
+            
+            'Applies appropriate formatting to yearly change and percentagte. If positive value, make green (4), else (negative), make red(3). 
+            Cells(sum_table_row, 11).Value = FormatPercent(Cells(sum_table_row, 11))
+            If Cells(sum_table_row, 10).Value > 0 Then
+                Cells(sum_table_row, 10).Interior.ColorIndex = 4
+                Cells(sum_table_row, 11).Interior.ColorIndex = 4
+            Else
+                Cells(sum_table_row, 10).Interior.ColorIndex = 3
+                Cells(sum_table_row, 11).Interior.ColorIndex = 3
+            End If
             
             'checks if overall greatest increase is less than most recently calculated ticker's increase. If true, replace greatest increase values
             If gincrease < (closing - opening) / opening Then
@@ -83,14 +93,14 @@ For j = 1 To wscounter
                 gvolume_tick = ticker
             End If
             'Updates ticker and opening to new ticker symbol referencing row below current row ((Cells(i+1,1) is the start of new ticker symbol),
-            'and reset volume to 0 for new ticker (will update on following iterations) 
+            'and reset volume to 0 for new ticker (will update on following iterations)
             sum_table_row = sum_table_row + 1
             ticker = Cells(i + 1, 1).Value
             opening = Cells(i + 1, 3).Value
             Cells(sum_table_row, 9).Value = ticker
             volume = 0
 
-        ' Else will be all rows (other than the first row where i = 2) where the current row and row below (i+1) match. 
+        ' Else will be all rows (other than the first row where i = 2) where the current row and row below (i+1) match.
         ' Only action needed is adding current row volume to totalf volume for current ticker iteration.
         Else
             volume = Cells(i, 7).Value + volume
@@ -112,5 +122,7 @@ For j = 1 To wscounter
     Range("P2").Value = gincrease
     Range("P3").Value = gdecrease
     Range("P4").Value = gvolume
+    Range("P2").Value = FormatPercent(Range("P2"))
+    Range("P3").Value = FormatPercent(Range("P3"))
 Next j
 End Sub
